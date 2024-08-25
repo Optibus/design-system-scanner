@@ -19,25 +19,23 @@ export function PropsView({
   );
   return (
     <ul>
-      <details open>
-        <summary>Prop spreads ({spreads.length})</summary>
+      <li>Prop spreads ({spreads.length})</li>
+      <ul>
         {spreads.length === 0 ? (
-          <span>
+          <li>
             This component ins't being used with a spread (
             <code>{"{...props}"}</code>)
-          </span>
+          </li>
         ) : (
-          <ul>
-            {spreads.map((instance, index) => (
-              <li key={index}>
-                <a href={instance.link} title="Open in VS Code">
-                  {instance.relativePath}
-                </a>
-              </li>
-            ))}
-          </ul>
+          spreads.map((instance, index) => (
+            <li key={index}>
+              <a href={instance.link} title="Open in VS Code">
+                {instance.relativePath}
+              </a>
+            </li>
+          ))
         )}
-      </details>
+      </ul>
       <br />
       {instancesWithCounts.length === 0 ? (
         <p>This component is only being used with its default props</p>
