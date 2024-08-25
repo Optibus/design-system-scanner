@@ -1,14 +1,15 @@
 {
-  "name": "ds-analyzer",
-  "private": true,
-  "version": "0.0.0",
+  "name": "@optibus-internal/design-system-scanner",
+  "version": "0.0.2",
   "type": "module",
+  "bin": "server.js",
   "scripts": {
     "start": "node server.js",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
     "@react-aria/example-theme": "^1.0.3",
+    "commander": "^12.1.0",
     "react": "^18.3.1",
     "react-aria-components": "^1.3.3",
     "react-dom": "^18.3.1",

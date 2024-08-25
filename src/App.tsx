@@ -23,7 +23,7 @@ function App() {
   return (
     <>
       <header>
-        <h1>Design System Usage Scanner</h1>
+        <h1>Design System Scanner</h1>
       </header>
       <aside>
         <ListBox

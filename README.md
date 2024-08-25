@@ -1,30 +1,27 @@
-# React + TypeScript + Vite
+# Design System Scanner
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This package scans a codebase for imports from the design system. Its main entry point is `server.js`, which you can run with `node server.js`.
 
-Currently, two official plugins are available:
+This file uses `react-scanner` to scan the provided codebase and then runs a local server where you can browse the analysis.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## How to run
 
-## Expanding the ESLint configuration
+If you want to scan the codebase in `path/to/codebase` simply run
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+```
+npx @optibus-internal/design-system-scanner path/to/codebase
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+You can also specify the port the server will run on using `--port`. The default is 4682.
+
+If you're working on this package you can run `npx . path/to/codebase` or simply `node server.js path/to/codebase`.
+
+## How to publish
+
+Make sure the version number in `package.json` is correct, and then:
+
+```
+npm publish
+```
+
+But only if you have a Gemfury account and you've logged in using `npm login`
