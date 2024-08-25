@@ -1,12 +1,17 @@
 import { useState } from "react";
 import "./App.css";
 import { ComponentData, useScannerResults } from "./useScannerResults";
+import { makeDirectoryTree } from "./directoryTree";
+import { FileTreeView } from "./FileTreeView";
+import { PropsView } from "./PropsView";
+import { analyzePropUsage } from "./propUsage";
 
 function App() {
   const { componentList, analysis } = useScannerResults();
   const [selectedComponent, setSelectedComponent] = useState<string | null>(
     null
   );
+
   return (
     <>
       <header>
@@ -45,12 +50,25 @@ function App() {
 
 export default App;
 
+type View = "files" | "props";
+
 function InstanceStuff({ component }: { component: ComponentData }) {
+  const [view, setView] = useState<View>("files");
+
   return (
-    <ul>
-      {component.instances.map((instance, index) => (
-        <li key={index}>{JSON.stringify(instance)}</li>
-      ))}
-    </ul>
+    <div>
+      <button onClick={() => setView("files")}>Files</button>
+      <button onClick={() => setView("props")}>Props</button>
+      {view === "files" ? (
+        <FileTreeView
+          tree={makeDirectoryTree(
+            component.instances,
+            (instance) => instance.relativePath
+          )}
+        />
+      ) : (
+        <PropsView propUsage={analyzePropUsage(component.instances)} />
+      )}
+    </div>
   );
 }

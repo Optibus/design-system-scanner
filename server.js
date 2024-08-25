@@ -1,9 +1,11 @@
 import { createServer } from "vite";
 import scanner from "react-scanner";
+import { fileURLToPath } from "node:url";
 
+const crawlFrom = fileURLToPath(new URL("../armada", import.meta.url));
 const scannerResults = await scanner.run(
   {
-    crawlFrom: "../armada/calendar",
+    crawlFrom,
     includeSubComponents: true,
     exclude: [
       "node_modules",
@@ -21,11 +23,10 @@ const scannerResults = await scanner.run(
   "."
 );
 const server = await createServer({
-  // root: ".",
   configFile: "vite.config.ts",
-  define: { scannerResults },
+  define: { scannerResults, crawlFrom: { path: crawlFrom } },
   server: {
-    port: 1337,
+    port: 4682,
   },
 });
 await server.listen();
