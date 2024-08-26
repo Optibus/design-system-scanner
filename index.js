@@ -3,8 +3,9 @@ import { fileURLToPath } from "node:url";
 import * as path from "node:path";
 import process from "node:process";
 import { program } from "commander";
-import { createServer } from "vite";
+import { build, createServer } from "vite";
 import scanner from "react-scanner";
+import open from "open";
 
 program
   .name("design-system-scanner")
@@ -13,10 +14,13 @@ program
     "<crawlFrom>",
     "The path to crawl from. This should be the path to armada or houston for example"
   )
-  .option("-p, --port <port>", "Port to run the server on", "4682");
+  .option(
+    "-s, --server",
+    "Start a Vite dev server to work on the package's code"
+  );
 program.parse();
 
-const port = parseInt(program.opts().port);
+const { server = false } = program.opts();
 const [relativeCrawlFrom] = program.args;
 
 const crawlFrom = path.join(process.cwd(), relativeCrawlFrom);
@@ -40,13 +44,23 @@ const scannerResults = await scanner.run(
   },
   "."
 );
-const server = await createServer({
+
+const config = {
   configFile: fileURLToPath(import.meta.resolve("./vite.config.ts")),
   define: { scannerResults, crawlFrom: { path: crawlFrom } },
-  server: { port },
+  server: { port: 4682 },
   root: fileURLToPath(import.meta.resolve(".")),
-});
-await server.listen();
+  build: {
+    outDir: "scanner-report",
+  },
+};
 
-server.printUrls();
-server.bindCLIShortcuts({ print: true });
+if (server) {
+  const server = await createServer(config);
+  await server.listen();
+  server.printUrls();
+  server.bindCLIShortcuts({ print: true });
+} else {
+  await build(config);
+  open(fileURLToPath(import.meta.resolve("./scanner-report/index.html")));
+}
