@@ -18,13 +18,6 @@ type ScannerResultInstance = {
   };
 };
 
-declare global {
-  interface Window {
-    scannerResults: Record<string, { instances: ScannerResultInstance[] }>;
-    crawlFrom: { path: string };
-  }
-}
-
 export type ComponentDataInstance = {
   relativePath: string;
   lineNumber: number;
@@ -45,10 +38,7 @@ function parseScannerComponentResult(scanResult: {
     (instance) => instance.propsSpread
   );
   const instances = scanResult.instances.map((instance) => ({
-    relativePath: instance.location.file.replace(
-      window.crawlFrom.path + "/",
-      ""
-    ),
+    relativePath: instance.location.file.replace(crawlFrom.path + "/", ""),
     lineNumber: instance.location.start.line,
     link: `vscode://file/${instance.location.file}:${instance.location.start.line}:${instance.location.start.column}`,
     props: instance.props,
@@ -61,14 +51,11 @@ export function useScannerResults(): {
   componentList: string[];
   analysis: Map<string, ComponentData>;
 } {
-  const componentList = useMemo(
-    () => Object.keys(window.scannerResults).sort(),
-    []
-  );
+  const componentList = useMemo(() => Object.keys(scannerResults).sort(), []);
   const analysis = useMemo(
     () =>
       new Map(
-        Object.entries(window.scannerResults).map(([component, result]) => [
+        Object.entries(scannerResults).map(([component, result]) => [
           component,
           parseScannerComponentResult(result),
         ])
