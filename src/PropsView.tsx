@@ -41,13 +41,13 @@ export function PropsView({
         <p>This component is only being used with its default props</p>
       ) : (
         instancesWithCounts.map(({ propName, propValues, instanceCount }) => (
-          <details>
+          <details key={propName}>
             <summary>
               {propName} ({instanceCount})
             </summary>
             <ul>
               {Object.entries(propValues).map(([propValue, instances]) => (
-                <details>
+                <details key={propValue}>
                   <summary>
                     {propValue} ({instances.length})
                   </summary>

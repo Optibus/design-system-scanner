@@ -27,39 +27,41 @@ function App() {
       </header>
       <aside>
         <ListBox
+          renderEmptyState={() => (
+            <p style={{ padding: "1rem" }}>
+              No design system components found in this project.
+            </p>
+          )}
           aria-label="All Components"
           selectionMode="single"
           selectionBehavior="replace"
           selectedKeys={selectedComponent === null ? [] : [selectedComponent]}
           onSelectionChange={(selection) => {
-            console.log({ selection });
-            if (selection === "all") {
+            if (selection === "all" || selection.size === 0) {
               return;
             }
-            if (selection.size === 0) {
-              setSelectedComponent(null);
-            } else {
-              setSelectedComponent(selection.values().next().value);
-            }
+            setSelectedComponent(selection.values().next().value);
           }}
         >
           {componentList.map((component) => (
             <ListBoxItem key={component} id={component}>
-              {component} ({analysis.get(component)?.instances.length})
+              {`${component} (${analysis.get(component)?.instances.length})`}
             </ListBoxItem>
           ))}
         </ListBox>
       </aside>
-      <main>
-        {selectedComponent === null ? (
-          <p>Select a component from the sidebar</p>
-        ) : (
-          <>
-            <h2>{selectedComponent}</h2>
-            <InstanceStuff component={analysis.get(selectedComponent)!} />
-          </>
-        )}
-      </main>
+      {componentList.length > 0 && (
+        <main>
+          {selectedComponent === null ? (
+            <p>Select a component from the sidebar</p>
+          ) : (
+            <>
+              <h2>{selectedComponent}</h2>
+              <InstanceStuff component={analysis.get(selectedComponent)!} />
+            </>
+          )}
+        </main>
+      )}
     </>
   );
 }
