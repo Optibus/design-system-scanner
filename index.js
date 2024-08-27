@@ -31,6 +31,7 @@ const scannerResults = await scanner.run(
     includeSubComponents: true,
     exclude: [
       "node_modules",
+      "bower_components",
       "dist",
       "build",
       ".git",
