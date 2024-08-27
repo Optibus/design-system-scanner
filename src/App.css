@@ -10,7 +10,7 @@
     "aside main";
 }
 
-header {
+#root > header {
   grid-area: header;
   position: sticky;
   padding-top: 2rem;
@@ -29,6 +29,8 @@ aside {
   position: sticky;
   top: calc(5rem + 4px);
   max-height: calc(100vh - 6rem - 4px);
+  display: flex;
+  flex-direction: column;
 }
 
 main {
@@ -142,16 +144,26 @@ main {
     outline: 2px solid var(--focus-ring-color);
     outline-offset: -1px;
   }
+
+  .react-aria-Section:not(:first-child) {
+    margin-top: 12px;
+  }
+
+  .react-aria-Header {
+    font-size: 1rem;
+    font-weight: bold;
+    padding: 0.25rem 0.75rem;
+  }
 }
 
 .react-aria-ListBoxItem {
   margin: 2px;
-  padding: 0.286rem 0.571rem;
+  padding: 0.35rem 0.75rem;
   border-radius: 6px;
   outline: none;
   cursor: default;
   color: var(--text-color);
-  font-size: 1.072rem;
+  font-size: 1rem;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -169,5 +181,62 @@ main {
       outline-color: var(--highlight-foreground);
       outline-offset: -4px;
     }
+  }
+}
+
+/* React Aria's RadioGroup */
+
+.react-aria-RadioGroup {
+  padding: 0.5rem 0.5rem;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 1rem;
+  color: var(--text-color);
+
+  .react-aria-Label {
+    flex-grow: 1;
+  }
+}
+
+.react-aria-Radio {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1rem;
+  color: var(--text-color);
+  forced-color-adjust: none;
+
+  &:before {
+    content: "";
+    display: block;
+    width: 1rem;
+    height: 1rem;
+    box-sizing: border-box;
+    border: 0.143rem solid var(--border-color);
+    background: var(--field-background);
+    border-radius: 1rem;
+    transition: all 200ms;
+  }
+
+  &[data-pressed]:before {
+    border-color: var(--border-color-pressed);
+  }
+
+  &[data-selected] {
+    &:before {
+      border-color: var(--highlight-background);
+      border-width: 0.35rem;
+    }
+
+    &[data-pressed]:before {
+      border-color: var(--highlight-background-pressed);
+    }
+  }
+
+  &[data-focus-visible]:before {
+    outline: 2px solid var(--focus-ring-color);
+    outline-offset: 2px;
   }
 }
