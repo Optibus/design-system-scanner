@@ -23,7 +23,7 @@ program.parse();
 const { server = false } = program.opts();
 const [relativeCrawlFrom] = program.args;
 
-const crawlFrom = path.join(process.cwd(), relativeCrawlFrom);
+const crawlFrom = path.resolve(relativeCrawlFrom);
 
 const scannerResults = await scanner.run(
   {
