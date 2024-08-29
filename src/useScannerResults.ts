@@ -48,10 +48,25 @@ function parseScannerComponentResult(scanResult: {
 }
 
 export function useScannerResults(): {
-  componentList: string[];
+  componentLists: { reactComponents: string[]; icons: string[] };
   analysis: Map<string, ComponentData>;
 } {
-  const componentList = useMemo(() => Object.keys(scannerResults).sort(), []);
+  const componentLists = useMemo(() => {
+    const reactComponents = [];
+    const icons = [];
+    for (const componentName in scannerResults) {
+      if (
+        (/(Small|Medium|Large|Custom)$/.test(componentName) &&
+          componentName !== "PillSmall") ||
+        componentName === "TaskHoliday"
+      ) {
+        icons.push(componentName);
+      } else {
+        reactComponents.push(componentName);
+      }
+    }
+    return { reactComponents, icons };
+  }, []);
   const analysis = useMemo(
     () =>
       new Map(
@@ -63,5 +78,5 @@ export function useScannerResults(): {
     []
   );
 
-  return { componentList, analysis };
+  return { componentLists, analysis };
 }

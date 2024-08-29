@@ -1,5 +1,6 @@
 import { useMemo } from "react";
-import { countInstances, PropUsage } from "./propUsage";
+import { PropUsage } from "./propUsage";
+import { sumBy } from "./utils";
 
 export function PropsView({
   propUsage: { spreads, propInstances },
@@ -12,7 +13,10 @@ export function PropsView({
         .map(([propName, propValues]) => ({
           propName,
           propValues,
-          instanceCount: countInstances(propValues),
+          instanceCount: sumBy(
+            Object.values(propValues),
+            (instances) => instances.length
+          ),
         }))
         .sort((a, b) => b.instanceCount - a.instanceCount),
     [propInstances]

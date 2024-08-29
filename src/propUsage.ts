@@ -30,13 +30,3 @@ export function analyzePropUsage(
   }
   return { propInstances, spreads };
 }
-
-export function countInstances(
-  propValues: Record<string, ComponentDataInstance[]>
-) {
-  let count = 0;
-  for (const instances of Object.values(propValues)) {
-    count += instances.length;
-  }
-  return count;
-}

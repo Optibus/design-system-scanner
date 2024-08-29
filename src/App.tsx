@@ -3,12 +3,25 @@ import "./App.css";
 import { useScannerResults } from "./useScannerResults";
 import { ComponentList } from "./ComponentList";
 import { ComponentReport } from "./ComponentReport";
+import { sumBy } from "./utils";
 
 function App() {
-  const { componentList, analysis } = useScannerResults();
+  const { componentLists, analysis } = useScannerResults();
   const [selectedComponent, setSelectedComponent] = useState<string | null>(
     null
   );
+  const stats = {
+    componentCount: componentLists.reactComponents.length,
+    iconCount: componentLists.icons.length,
+    componentInstanceCount: sumBy(
+      componentLists.reactComponents,
+      (component) => analysis.get(component)!.instances.length
+    ),
+    iconInstanceCount: sumBy(
+      componentLists.icons,
+      (component) => analysis.get(component)!.instances.length
+    ),
+  };
 
   return (
     <>
@@ -19,15 +32,19 @@ function App() {
         <ComponentList
           selectedComponent={selectedComponent}
           setSelectedComponent={setSelectedComponent}
-          componentList={componentList}
+          componentLists={componentLists}
           analysis={analysis}
         />
       </aside>
-      {componentList.length > 0 && (
+      {stats.componentCount + stats.iconCount > 0 && (
         <main>
           {selectedComponent === null ? (
-            <p>Select a component from the sidebar</p>
             <div className="placeholder">
+              <p>
+                There are {stats.componentCount} components used{" "}
+                {stats.componentInstanceCount} times and {stats.iconCount} icons
+                used {stats.iconInstanceCount} times in this project.
+              </p>
               <p>Select a component from the sidebar to see more details.</p>
             </div>
           ) : (

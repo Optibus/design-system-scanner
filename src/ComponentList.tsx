@@ -15,37 +15,15 @@ type SortBy = "name" | "instances";
 export function ComponentList({
   selectedComponent,
   setSelectedComponent,
-  componentList,
+  componentLists,
   analysis,
 }: {
   selectedComponent: string | null;
   setSelectedComponent: (component: string) => void;
-  componentList: string[];
+  componentLists: { reactComponents: string[]; icons: string[] };
   analysis: Map<string, ComponentData>;
 }) {
   const [sortBy, setSortBy] = useState<SortBy>("name");
-
-  const componentSections = useMemo(() => {
-    const componentsWithCounts = componentList.map((component) => ({
-      name: component,
-      instanceCount: analysis.get(component)!.instances.length,
-    }));
-    const sortedComponentsWithCounts =
-      sortBy === "instances"
-        ? componentsWithCounts.sort((a, b) => b.instanceCount - a.instanceCount)
-        : componentsWithCounts.sort((a, b) => a.name.localeCompare(b.name));
-
-    const reactComponents = [];
-    const icons = [];
-    for (const component of sortedComponentsWithCounts) {
-      if (/(Small|Medium|Large|Custom)$/.test(component.name)) {
-        icons.push(component);
-      } else {
-        reactComponents.push(component);
-      }
-    }
-    return { reactComponents, icons };
-  }, [componentList, sortBy, analysis]);
 
   return (
     <>
@@ -74,23 +52,68 @@ export function ComponentList({
           setSelectedComponent(selection.values().next().value);
         }}
       >
-        <Section id="react-components">
-          <Header>Components</Header>
-          {componentSections.reactComponents.map((component) => (
-            <ListBoxItem key={component.name} id={component.name}>
-              {`${component.name} (${component.instanceCount})`}
-            </ListBoxItem>
-          ))}
-        </Section>
-        <Section id="icons">
-          <Header>Icons</Header>
-          {componentSections.icons.map((component) => (
-            <ListBoxItem key={component.name} id={component.name}>
-              {`${component.name} (${component.instanceCount})`}
-            </ListBoxItem>
-          ))}
-        </Section>
+        <ComponentListSection
+          title="Components"
+          id="react-components"
+          components={componentLists.reactComponents}
+          analysis={analysis}
+          sortBy={sortBy}
+        />
+        <ComponentListSection
+          title="Icons"
+          id="icons"
+          components={componentLists.icons}
+          analysis={analysis}
+          sortBy={sortBy}
+        />
       </ListBox>
     </>
   );
+}
+
+function ComponentListSection({
+  title,
+  id,
+  components,
+  analysis,
+  sortBy,
+}: {
+  title: string;
+  id: string;
+  components: string[];
+  analysis: Map<string, ComponentData>;
+  sortBy: SortBy;
+}) {
+  const sortedComponents = useMemo(
+    () => sortComponentsWithCounts(components, analysis, sortBy),
+    [components, analysis, sortBy]
+  );
+
+  if (sortedComponents.length === 0) {
+    return null;
+  }
+  return (
+    <Section id={id}>
+      <Header>{title}</Header>
+      {sortedComponents.map((component) => (
+        <ListBoxItem key={component.name} id={component.name}>
+          {`${component.name} (${component.instanceCount})`}
+        </ListBoxItem>
+      ))}
+    </Section>
+  );
+}
+
+function sortComponentsWithCounts(
+  components: string[],
+  analysis: Map<string, ComponentData>,
+  sortBy: SortBy
+): { name: string; instanceCount: number }[] {
+  const componentsWithCounts = components.map((component) => ({
+    name: component,
+    instanceCount: analysis.get(component)!.instances.length,
+  }));
+  return sortBy === "instances"
+    ? componentsWithCounts.sort((a, b) => b.instanceCount - a.instanceCount)
+    : componentsWithCounts.sort((a, b) => a.name.localeCompare(b.name));
 }
