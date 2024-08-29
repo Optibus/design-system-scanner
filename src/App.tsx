@@ -27,6 +27,9 @@ function App() {
         <main>
           {selectedComponent === null ? (
             <p>Select a component from the sidebar</p>
+            <div className="placeholder">
+              <p>Select a component from the sidebar to see more details.</p>
+            </div>
           ) : (
             <>
               <ComponentReport

@@ -53,6 +53,10 @@ main {
   }
 }
 
+.placeholder {
+  padding-top: 1.5rem;
+}
+
 /* React Aria's Tabs */
 
 .react-aria-Tabs {
